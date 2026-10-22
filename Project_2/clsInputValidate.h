@@ -6,12 +6,19 @@ using namespace std;
 
 class clsInputValidate
 {
-private :
-
-	double Number;
-
 public:
+
+	static bool IsNumberBetween(short Number, short From, short To)
+	{
+		return ((Number >= From) && (Number <= To));
+	}
+
 	static bool IsNumberBetween(int Number, int From, int To)
+	{
+		return ((Number >= From) && (Number <= To));
+	}
+
+	static bool IsNumberBetween(float Number, float From, float To)
 	{
 		return ((Number >= From) && (Number <= To));
 	}
@@ -23,29 +30,28 @@ public:
 
 	static bool IsDateBetween(clsDate SystemDate, clsDate DateFrom, clsDate DateTo)
 	{
-		if (clsDate::CompareDates(SystemDate, DateFrom) == clsDate::After ||
-			clsDate::CompareDates(SystemDate, DateFrom) == clsDate::Equal)
+		if ((clsDate::IsDate1AfterDate2(SystemDate, DateFrom) || clsDate::IsDate1EqualDate2(SystemDate, DateFrom))&&
+			(clsDate::IsDate1BeforeDate2(SystemDate, DateTo) || clsDate::IsDate1EqualDate2(SystemDate, DateTo)))
 		{
-			return clsDate::IsDate1BeforeDate2(SystemDate, DateTo) || 
-				clsDate::IsDate1EqualDate2(SystemDate , DateTo);
+			return true;
 		}
-		else
-			return clsDate::IsDate1AfterDate2(SystemDate, DateTo)||
-			clsDate::IsDate1EqualDate2(SystemDate, DateTo);
-		;
+		if ((clsDate::IsDate1AfterDate2(SystemDate, DateTo) || clsDate::IsDate1EqualDate2(SystemDate, DateTo)) &&
+			(clsDate::IsDate1BeforeDate2(SystemDate, DateFrom) || clsDate::IsDate1EqualDate2(SystemDate, DateFrom)))
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	static int ReadIntNumber(string StringValidationMessage)
 	{
 		int Number;
 		
-		cin >> Number;
-		while (cin.fail())
+		while (!(cin >> Number))
 		{
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			cout << StringValidationMessage << endl;
-			cin >> Number;	
+			cout << StringValidationMessage << endl;	
 		}
 		return Number;
 	}
@@ -55,9 +61,8 @@ public:
 		int Number = ReadIntNumber(StringValidationMessage);
 		while (!IsNumberBetween(Number, From, To))
 		{
-			cout << StringValidationMessage << endl;
-			cin >> Number;
-
+			cout << StringValidationMessage;
+			Number = ReadIntNumber(StringValidationMessage);
 		}
 		return Number;
 	}
@@ -65,13 +70,11 @@ public:
 	static int ReadDblNumber(string Messge)
 	{
 		double Number;
-		cin >> Number;
-		while (cin.fail())
+		while (!(cin >> Number))
 		{
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			cout << Messge << endl;
-			cin >> Number;
 		}
 		return Number;
 	}
@@ -81,8 +84,8 @@ public:
 		double Number = ReadDblNumber(StringValidationMessage);
 		while (!IsNumberBetween(Number, From, To))
 		{
-			cout << StringValidationMessage << endl;
-			cin >> Number;
+			cout << StringValidationMessage ;
+			Number = ReadDblNumber(StringValidationMessage);
 		}
 		return Number;
 	}
